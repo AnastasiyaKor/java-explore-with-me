@@ -1,15 +1,50 @@
-version: '3.1'
+version: '3.8'
 services:
   stats-server:
+    build: stats-server/stats-service
+    image: stats-server
+    container_name: ewm-stats-server
     ports:
       - "9090:9090"
-
+    depends_on:
+      - stats-db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/endpoint_hit
+      - SPRING_DATASOURCE_USERNAME=endpointHit
+      - SPRING_DATASOURCE_PASSWORD=endpointHit
   stats-db:
-    image: postgres:14-alpine
+    image: postgres:13.7-alpine
+    container_name: stats-db
+    volumes:
+      - /var/lib/postgresql/data/
+    ports:
+      - "6541:5432"
+    environment:
+      - POSTGRES_DB=endpoint_hit
+      - POSTGRES_USER=endpointHit
+      - POSTGRES_PASSWORD=endpointHit
 
-  ewm-service:
+  ewm-server:
+    build: ewm-server
+    container_name: ewm-server
     ports:
       - "8080:8080"
-
+    depends_on:
+      - ewm-db
+      - stats-server
+    environment:
+      - STATS_SERVICE_URL=http://server:9090
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm
+      - SPRING_DATASOURCE_USERNAME=endpointHit
+      - SPRING_DATASOURCE_PASSWORD=endpointHit
   ewm-db:
-    image: postgres:14-alpine
+    image: postgres:13.7-alpine
+    container_name: ewm-db
+    volumes:
+      - /var/lib/postgresql/data/
+    ports:
+      - "6542:5432"
+    environment:
+      - POSTGRES_DB=ewm
+      - POSTGRES_USER=endpointHit
+      - POSTGRES_PASSWORD=endpointHit
