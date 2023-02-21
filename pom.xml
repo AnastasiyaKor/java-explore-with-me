@@ -4,7 +4,6 @@
 	<modelVersion>4.0.0</modelVersion>
 	<modules>
 		<module>stats-server</module>
-		<module>ewm-server</module>
 	</modules>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -104,6 +103,21 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-actuator</artifactId>
 				<version>${spring.boot.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-core</artifactId>
+				<version>${hibernate.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-entitymanager</artifactId>
+				<version>${hibernate.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>javax.xml.bind</groupId>
+				<artifactId>jaxb-api</artifactId>
+				<version>${javax-jaxb.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
