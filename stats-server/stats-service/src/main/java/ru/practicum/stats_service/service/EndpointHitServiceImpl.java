@@ -2,13 +2,12 @@ package ru.practicum.stats_service.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.stats_dto.*;
+import ru.practicum.stats_dto.ViewStats;
+import ru.practicum.stats_service.model.App;
 import ru.practicum.stats_service.model.EndpointHit;
 import ru.practicum.stats_service.repository.EndpointHitRepository;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -16,27 +15,30 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EndpointHitServiceImpl implements EndpointHitService {
     private final EndpointHitRepository endpointHitRepository;
+    private final AppService appService;
 
     @Override
     public EndpointHit create(EndpointHit endpointHit) {
-
+        App newApp = appService.create(endpointHit.getApp());
+        endpointHit.setApp(newApp);
         return endpointHitRepository.save(endpointHit);
     }
 
     @Override
-    public List<ViewStats> get(String start, String end, List<String> uris, boolean unique) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    public List<ViewStats> get(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
         List<ViewStats> hits;
-        if (uris != null) {
+        if (!uris.isEmpty()) {
             if (!unique) {
-                hits = endpointHitRepository.countHit(LocalDateTime.parse(start, formatter),
-                        LocalDateTime.parse(end, formatter), uris);
+                hits = endpointHitRepository.countHit(start, end, uris);
             } else {
-                hits = endpointHitRepository.countDistinctHit(LocalDateTime.parse(start, formatter),
-                        LocalDateTime.parse(end, formatter), uris);
+                hits = endpointHitRepository.countDistinctHit(start, end, uris);
             }
         } else {
-            return Collections.emptyList();
+            if (!unique) {
+                hits = endpointHitRepository.countHitWithoutUri(start, end);
+            } else {
+                hits = endpointHitRepository.countDistinctHitWithoutUri(start, end);
+            }
         }
         return hits;
     }

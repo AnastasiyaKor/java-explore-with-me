@@ -8,11 +8,13 @@ import reactor.core.publisher.Mono;
 import ru.practicum.stats_dto.EndpointHitDto;
 import ru.practicum.stats_dto.ViewStats;
 
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Component
 public class StatsClient {
     @Value("${stats.server.url}")
-    String url;
+    private String url;
     protected final WebClient webClient = WebClient.builder()
             .baseUrl(url)
             .build();
@@ -31,7 +33,7 @@ public class StatsClient {
                 });
     }
 
-    public Mono<ViewStats> get(String start, String end, String[] uris, boolean unique) {
+    public Mono<ViewStats> get(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
         return webClient.get()
                 .uri("/stats?start={}&end={}&uris={}&unique={}", start, end, uris, unique)
                 .exchangeToMono(response -> {

@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "hits")
+@Table(name = "hits", schema = "public")
 @Setter
 @Getter
 @ToString
@@ -18,8 +18,10 @@ public class EndpointHit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "app")
-    private String app;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "app_id")
+    @ToString.Exclude
+    private App app;
     @Column(name = "uri")
     private String uri;
     @Column(name = "ip")

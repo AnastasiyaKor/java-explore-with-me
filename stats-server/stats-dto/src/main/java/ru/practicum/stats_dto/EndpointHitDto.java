@@ -8,8 +8,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 @Builder
 public class EndpointHitDto {
-    @NotBlank
-    private String app;
+    private AppDto app;
     @NotBlank
     private String uri;
     @NotBlank
