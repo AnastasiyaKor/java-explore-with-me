@@ -10,7 +10,6 @@ import ru.practicum.stats_service.repository.EndpointHitRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 
-
 @Service
 @RequiredArgsConstructor
 public class EndpointHitServiceImpl implements EndpointHitService {
@@ -19,8 +18,12 @@ public class EndpointHitServiceImpl implements EndpointHitService {
 
     @Override
     public EndpointHit create(EndpointHit endpointHit) {
-        App newApp = appService.create(endpointHit.getApp());
-        endpointHit.setApp(newApp);
+        App appId = appService.getApp(endpointHit.getApp().getApp());
+        if (appId == null) {
+            endpointHit.setApp(appService.create(endpointHit.getApp()));
+        } else {
+            endpointHit.setApp(appId);
+        }
         return endpointHitRepository.save(endpointHit);
     }
 

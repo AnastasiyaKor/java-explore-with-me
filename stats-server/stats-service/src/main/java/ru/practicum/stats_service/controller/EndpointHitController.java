@@ -27,8 +27,7 @@ public class EndpointHitController {
         log.info("Сохранение информации о том, что к эндпоинту был запрос");
         EndpointHit endpointHit = Mapper.toEndpointHit(endpointHitDto);
         EndpointHit newEndpointHit = endpointHitService.create(endpointHit);
-        EndpointHitDto endpointHitDto1 = Mapper.toEndpointHitDto(newEndpointHit);
-        return endpointHitDto1;
+        return Mapper.toEndpointHitDto(newEndpointHit);
     }
 
     @GetMapping("/stats")
