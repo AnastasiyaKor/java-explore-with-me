@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Mono;
 import ru.practicum.stats_dto.EndpointHitDto;
 import ru.practicum.stats_dto.ViewStats;
 
@@ -19,13 +18,13 @@ public class StatsController {
     private final StatsClient statsClient;
 
     @PostMapping("/hit")
-    public Mono<EndpointHitDto> create(@Valid @RequestBody EndpointHitDto endpointHitDto) {
+    public EndpointHitDto create(@Valid @RequestBody EndpointHitDto endpointHitDto) {
         log.info("Сохранение информации о том, что к эндпоинту был запрос");
         return statsClient.create(endpointHitDto);
     }
 
     @GetMapping("/stats?start=start&end=end&uris=uris&unique=unique")
-    public Mono<ViewStats> get(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime start,
+    public List<ViewStats> get(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime start,
                                @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime end,
                                @RequestParam(defaultValue = "") List<String> uris,
                                @RequestParam(defaultValue = "false") boolean unique) {

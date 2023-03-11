@@ -25,3 +25,29 @@ services:
       - POSTGRES_PASSWORD=hits
     volumes:
       - /var/lib/postgresql/data/
+  ewm-server:
+    build: ewm-server
+    image: ewm-server
+    container_name: ewm-server
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - ewm-db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm
+      - POSTGRES_USER=ewms
+      - POSTGRES_PASSWORD=ewms
+  ewm-db:
+    image: postgres:13.7-alpine
+    container_name: ewm-server-db
+    restart: always
+    ports:
+      - "6541:5432"
+    environment:
+      - POSTGRES_DB=ewm
+      - POSTGRES_USER=ewms
+      - POSTGRES_PASSWORD=ewms
+    volumes:
+      - /var/lib/postgresql/data/
+
