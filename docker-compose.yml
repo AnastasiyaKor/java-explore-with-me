@@ -18,10 +18,38 @@ services:
     container_name: ewm-stats-db
     restart: always
     ports:
-      - "6542:5432"
+      - "6541:5432"
     environment:
       - POSTGRES_DB=hits
       - POSTGRES_USER=hits
       - POSTGRES_PASSWORD=hits
     volumes:
       - /var/lib/postgresql/data/
+  ewm-server:
+    build: ewm-server
+    image: ewm-server
+    container_name: ewm-server
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - ewm-db
+      - stats-server
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewm
+      - POSTGRES_USER=ewms
+      - POSTGRES_PASSWORD=ewms
+      - stats.server.url=http://stats-server:9090
+  ewm-db:
+    image: postgres:13.7-alpine
+    container_name: ewm-server-db
+    restart: always
+    ports:
+      - "6542:5432"
+    environment:
+      - POSTGRES_DB=ewm
+      - POSTGRES_USER=ewms
+      - POSTGRES_PASSWORD=ewms
+    volumes:
+      - /var/lib/postgresql/data/
+
