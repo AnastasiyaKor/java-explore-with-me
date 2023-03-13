@@ -77,11 +77,9 @@ public class RequestServiceImpl implements RequestService {
 
     private void checkException(Event event, int userId) {
         int confirmedRequest = getConfirmedRequest(event.getId());
-        List<Request> requests = requestRepository.getRequests(event.getId());
-        for (Request r : requests) {
-            if (r.getRequester().getId() == userId) {
-                throw new ConflictException("Запрос уже был отправлен");
-            }
+        Request requests = requestRepository.getRequest(event.getId(), userId);
+        if (requests != null) {
+            throw new ConflictException("Запрос уже был отправлен");
         }
         if (event.getInitiator().getId() == userId) {
             throw new ConflictException("Нельзя отправллять запрос на участие в своем событии");

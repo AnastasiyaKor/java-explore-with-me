@@ -11,8 +11,11 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface RequestRepository extends JpaRepository<Request, Integer> {
-    @Query(value = "select r from Request as r where r.event.id = ?1")
-    List<Request> getRequests(int eventId);
+    @Query(value = "select r from Request as r where r.event.id = ?1 and r.requester.id = ?2")
+    Request getRequest(int eventId, int userId);
+
+    @Query(value = "select r from Request as r where r.event.id = ?1 and r.event.initiator.id= ?2")
+    List<Request> getRequests(int eventId, int userId);
 
     @Query(value = "select r from Request as r where r.id in (?1) and r.status = ?2 ")
     List<Request> getRequestByIdEventId(List<Integer> requestIds, RequestStatusEnum requestStatusEnum);

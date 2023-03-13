@@ -116,12 +116,7 @@ public class EventServiceImpl implements EventService {
         if (event.getInitiator().getId() != userId) {
             throw new NotFoundException("Событие недоступно");
         }
-        List<Request> requests = requestRepository.getRequests(eventId);
-        if (!requests.isEmpty()) {
-            return requests;
-        } else {
-            return Collections.emptyList();
-        }
+        return requestRepository.getRequests(eventId, userId);
     }
 
     @Override

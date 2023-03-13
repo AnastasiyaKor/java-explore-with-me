@@ -31,6 +31,7 @@ public class NewEventDto {
     @Valid
     @NotNull
     private LocationDto location;
+    @NotNull
     private Boolean paid = false;
     @PositiveOrZero
     private int participantLimit;
