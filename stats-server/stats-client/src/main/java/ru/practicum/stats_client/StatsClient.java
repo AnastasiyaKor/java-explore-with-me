@@ -17,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StatsClient {
     private final WebClient webClient;
+    static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public EndpointHitDto create(EndpointHitDto endpointHitDto) {
         return webClient
@@ -30,13 +31,12 @@ public class StatsClient {
     }
 
     public List<ViewStats> get(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return List.of(webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/stats")
-                        .queryParam("start", start.format(formatter))
-                        .queryParam("end", end.format(formatter))
+                        .queryParam("start", start.format(FORMATTER))
+                        .queryParam("end", end.format(FORMATTER))
                         .queryParam("uris", uris)
                         .queryParam("unique", unique)
                         .build())

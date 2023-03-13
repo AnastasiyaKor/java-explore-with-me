@@ -38,12 +38,11 @@ public class CategoryServiceImpl implements CategoryService {
                 new NotFoundException("Категория не найдена или недоступна"));
     }
 
-
     @Override
     public void deleteById(int catId) {
         categoryRepository.findById(catId);
-        List<Integer> categoryId = eventRepository.findAllByCategoryId(catId);
-        if (categoryId.isEmpty()) {
+        List<Integer> eventsId = eventRepository.findAllByCategoryId(catId);
+        if (eventsId.isEmpty()) {
             categoryRepository.deleteById(catId);
         } else {
             throw new ConflictException("Существуют события, связанные с категорией");

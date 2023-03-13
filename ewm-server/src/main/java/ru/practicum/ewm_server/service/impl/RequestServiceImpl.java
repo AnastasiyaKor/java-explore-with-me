@@ -66,17 +66,17 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public Integer getConfirmedRequest(int eventId, RequestStatusEnum requestStatusEnum) {
-        return requestRepository.getConfirmedRequest(eventId, requestStatusEnum).orElse(0);
+    public Integer getConfirmedRequest(int eventId) {
+        return requestRepository.getConfirmedRequest(eventId).orElse(0);
     }
 
     @Override
-    public Map<Integer, Integer> getConfirmedRequest(List<Event> events, RequestStatusEnum requestStatusEnum) {
-        return requestRepository.getConfirmedRequestsListInteger(events, requestStatusEnum);
+    public Map<Integer, Integer> getConfirmedRequest(List<Event> events) {
+        return requestRepository.getConfirmedRequestsListInteger(events);
     }
 
     private void checkException(Event event, int userId) {
-        int confirmedRequest = getConfirmedRequest(event.getId(), RequestStatusEnum.CONFIRMED);
+        int confirmedRequest = getConfirmedRequest(event.getId());
         List<Request> requests = requestRepository.getRequests(event.getId());
         for (Request r : requests) {
             if (r.getRequester().getId() == userId) {

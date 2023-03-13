@@ -19,10 +19,10 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
 
     List<Request> findByRequesterId(int userId);
 
-    @Query(value = "select count(r) from Request as r where r.event.id = ?1 and r.status = ?2")
-    Optional<Integer> getConfirmedRequest(int eventId, RequestStatusEnum requestStatusEnum);
+    @Query(value = "select count(r) from Request as r where r.event.id = ?1 and r.status = 'CONFIRMED'")
+    Optional<Integer> getConfirmedRequest(int eventId);
 
     @Query(value = "select r.event.id, count(r.status) from Request as r where r.event in (?1) " +
-            "and r.status = ?2 group by r.event.id")
-    Map<Integer, Integer> getConfirmedRequestsListInteger(List<Event> events, RequestStatusEnum requestStatusEnum);
+            "and r.status = 'CONFIRMED' group by r.event.id")
+    Map<Integer, Integer> getConfirmedRequestsListInteger(List<Event> events);
 }

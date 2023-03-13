@@ -37,6 +37,8 @@ public class EventServiceImpl implements EventService {
     private final RequestService requestService;
     private final StatisticService statisticService;
 
+    static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     @Override
     public List<EventShortDto> getEventsUserId(int userId, int from, int size, HttpServletRequest request) {
         Pageable pageable = PageRequest.of(from / size, size);
@@ -55,7 +57,7 @@ public class EventServiceImpl implements EventService {
         if (event.getEventDate().isAfter(minTime)) {
             event.getCategory().setName(category.getName());
             eventRepository.save(event);
-            int confirmedRequest = requestService.getConfirmedRequest(event.getId(), RequestStatusEnum.CONFIRMED);
+            int confirmedRequest = requestService.getConfirmedRequest(event.getId());
             EventFullDto eventFullDto = EventMapper.toEventFullDto(event);
             eventFullDto.setConfirmedRequests(confirmedRequest);
             return eventFullDto;
@@ -67,7 +69,7 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventFullDto getEventByIdUserWithId(int userId, int eventId) {
-        int confirmedRequest = requestService.getConfirmedRequest(eventId, RequestStatusEnum.CONFIRMED);
+        int confirmedRequest = requestService.getConfirmedRequest(eventId);
         Event event = eventRepository.getEventByIdUserWitchId(userId, eventId);
         EventFullDto eventFullDto = EventMapper.toEventFullDto(event);
         eventFullDto.setConfirmedRequests(confirmedRequest);
@@ -102,7 +104,7 @@ public class EventServiceImpl implements EventService {
             }
         }
         Event update = eventRepository.save(newEvent);
-        int confirmedRequest = requestService.getConfirmedRequest(newEvent.getId(), RequestStatusEnum.CONFIRMED);
+        int confirmedRequest = requestService.getConfirmedRequest(newEvent.getId());
         EventFullDto eventFullDto = EventMapper.toEventFullDto(update);
         eventFullDto.setConfirmedRequests(confirmedRequest);
         return eventFullDto;
@@ -129,7 +131,7 @@ public class EventServiceImpl implements EventService {
         List<Request> confirmedList = new ArrayList<>();
         List<Request> rejectedList = new ArrayList<>();
         Event event = getById(eventId);
-        int confirmedRequest = requestService.getConfirmedRequest(eventId, RequestStatusEnum.CONFIRMED);
+        int confirmedRequest = requestService.getConfirmedRequest(eventId);
         int count = confirmedRequest;
         if (confirmedRequest == event.getParticipantLimit()) {
             throw new ConflictException("Достигнут лимит по заявкам на данное событие");
@@ -234,7 +236,7 @@ public class EventServiceImpl implements EventService {
         }
         Event event = eventRepository.save(newEventAdmin);
         EventFullDto eventFullDto = EventMapper.toEventFullDto(event);
-        int confirmedRequest = requestService.getConfirmedRequest(event.getId(), RequestStatusEnum.CONFIRMED);
+        int confirmedRequest = requestService.getConfirmedRequest(event.getId());
         eventFullDto.setConfirmedRequests(confirmedRequest);
         return eventFullDto;
     }
@@ -278,12 +280,11 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventFullDto getEventByIdPublic(int id, HttpServletRequest request) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String start = "2000-01-01 00:00:00";
         LocalDateTime end = LocalDateTime.now();
         Event event = eventRepository.findByIdAndStateEquals(id, EventStateEnum.PUBLISHED);
-        int confirmedRequest = requestService.getConfirmedRequest(event.getId(), RequestStatusEnum.CONFIRMED);
-        List<ViewStats> viewStatsList = statisticService.getViews(LocalDateTime.parse(start, formatter), end,
+        int confirmedRequest = requestService.getConfirmedRequest(event.getId());
+        List<ViewStats> viewStatsList = statisticService.getViews(LocalDateTime.parse(start, FORMATTER), end,
                 List.of(request.getRequestURI() + "/" + event.getId()), true);
         EventFullDto eventFullDto = EventMapper.toEventFullDto(event);
         eventFullDto.setConfirmedRequests(confirmedRequest);
@@ -300,31 +301,34 @@ public class EventServiceImpl implements EventService {
     }
 
     private List<EventShortDto> addConfirmedRequest(List<Event> resultEventList, HttpServletRequest request) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String start = "2000-01-01 00:00:00";
         LocalDateTime currentTime = LocalDateTime.now();
-        String endTime = currentTime.format(formatter);
-        LocalDateTime end = LocalDateTime.parse(endTime, formatter);
-
+        String endTime = currentTime.format(FORMATTER);
+        LocalDateTime end = LocalDateTime.parse(endTime, FORMATTER);
         List<String> uris = List.of();
         Map<Integer, String> listUrisAndEventId = new HashMap<>();
         for (Event e : resultEventList) {
             uris = List.of("/events/" + e.getId());
             listUrisAndEventId.put(e.getId(), request.getRequestURI() + "/" + e.getId());
         }
-        List<ViewStats> viewStatsList = statisticService.getViews(LocalDateTime.parse(start, formatter),
+        List<ViewStats> viewStatsList = statisticService.getViews(LocalDateTime.parse(start, FORMATTER),
                 end, uris, true);
+        Map<Integer, Long> mapEventsIdAndCountViews = new HashMap<>();
+        for (Integer i : listUrisAndEventId.keySet()) {
+            for (ViewStats vv : viewStatsList) {
+                if (vv.getUri().equals(listUrisAndEventId.get(i))) {
+                    mapEventsIdAndCountViews.put(i, vv.getHits());
+                }
+            }
+        }
         List<EventShortDto> eventShortDtos = EventMapper.toListEventsShortDto(resultEventList);
-        Map<Integer, Integer> getConfirmedRequests = requestService.getConfirmedRequest(resultEventList,
-                RequestStatusEnum.CONFIRMED);
+        Map<Integer, Integer> getConfirmedRequests = requestService.getConfirmedRequest(resultEventList);
         for (EventShortDto e : eventShortDtos) {
             if (getConfirmedRequests.containsKey(e.getId())) {
                 e.setConfirmedRequests(getConfirmedRequests.get(e.getId()));
             }
-            for (ViewStats v : viewStatsList) {
-                if (v.getUri().equals(listUrisAndEventId.get(e.getId()))) {
-                    e.setViews((int) v.getHits());
-                }
+            if (mapEventsIdAndCountViews.containsKey(e.getId())) {
+                e.setViews(mapEventsIdAndCountViews.get(e.getId()).intValue());
             }
         }
         return eventShortDtos;
@@ -332,8 +336,7 @@ public class EventServiceImpl implements EventService {
 
     private List<EventFullDto> addConfirmedRequestFullDto(List<Event> eventList) {
         List<EventFullDto> eventFullDtos = EventMapper.toListEventFullDto(eventList);
-        Map<Integer, Integer> getConfirmedRequests = requestService.getConfirmedRequest(eventList,
-                RequestStatusEnum.CONFIRMED);
+        Map<Integer, Integer> getConfirmedRequests = requestService.getConfirmedRequest(eventList);
         for (EventFullDto e : eventFullDtos) {
             if (getConfirmedRequests.containsKey(e.getId())) {
                 e.setConfirmedRequests(getConfirmedRequests.get(e.getId()));
@@ -381,14 +384,14 @@ public class EventServiceImpl implements EventService {
     }
 
     private void updateTheEventFieldUserRequest(UpdateEventUserRequest userRequest, Event newEvent) {
-        if (userRequest.getAnnotation() != null) {
+        if (userRequest.getAnnotation() != null && !userRequest.getAnnotation().isBlank()) {
             newEvent.setAnnotation(userRequest.getAnnotation());
         }
         if (userRequest.getCategory() != null) {
             newEvent.setCategory(Category.builder()
                     .id(userRequest.getCategory()).build());
         }
-        if (userRequest.getDescription() != null) {
+        if (userRequest.getDescription() != null && !userRequest.getDescription().isBlank()) {
             newEvent.setDescription(userRequest.getDescription());
         }
         if (userRequest.getLocation() != null) {
@@ -403,6 +406,9 @@ public class EventServiceImpl implements EventService {
         }
         if (userRequest.getRequestModeration() != null) {
             newEvent.setRequestModeration(userRequest.getRequestModeration());
+        }
+        if (userRequest.getTitle() != null && !userRequest.getTitle().isBlank()) {
+            newEvent.setTitle(userRequest.getTitle());
         }
     }
 
