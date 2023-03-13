@@ -31,7 +31,7 @@ public class CompilationEvents implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CompilationEvents that = (CompilationEvents) o;
-        return compId == that.compId && eventId == that.eventId;
+        return Objects.equals(compId, that.compId) && Objects.equals(eventId, that.eventId);
     }
 
     @Override
