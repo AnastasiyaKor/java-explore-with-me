@@ -10,9 +10,8 @@ import ru.practicum.stats_dto.EndpointHitDto;
 import ru.practicum.stats_dto.ViewStats;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
@@ -31,18 +30,18 @@ public class StatsClient {
     }
 
     public List<ViewStats> get(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
-
-        return Arrays.asList(Objects.requireNonNull(webClient
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return List.of(webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/stats")
-                        .queryParam("start", start)
-                        .queryParam("end", end)
+                        .queryParam("start", start.format(formatter))
+                        .queryParam("end", end.format(formatter))
                         .queryParam("uris", uris)
                         .queryParam("unique", unique)
                         .build())
                 .retrieve()
                 .bodyToMono(ViewStats[].class)
-                .block()));
+                .block());
     }
 }

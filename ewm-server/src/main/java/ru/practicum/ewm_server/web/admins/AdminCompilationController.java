@@ -35,7 +35,7 @@ public class AdminCompilationController {
     }
 
     @PatchMapping("/{compId}")
-    public CompilationDto update(@RequestBody NewCompilationDto newCompilationDto,
+    public CompilationDto update(@RequestBody @Validated(Marker.Update.class) NewCompilationDto newCompilationDto,
                                  @PathVariable int compId) {
         log.info("Received a request from the administrator to update the compilation under the id: {}", compId);
         Compilation compilation = compilationService.update(newCompilationDto, compId);

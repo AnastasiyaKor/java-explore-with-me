@@ -1,5 +1,6 @@
 package ru.practicum.ewm_server.mapper;
 
+import lombok.experimental.UtilityClass;
 import ru.practicum.ewm_server.dto.ParticipationRequestDto;
 import ru.practicum.ewm_server.entity.Event;
 import ru.practicum.ewm_server.entity.Request;
@@ -8,6 +9,7 @@ import ru.practicum.ewm_server.entity.User;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@UtilityClass
 public class RequestMapper {
     public static Request toRequest(ParticipationRequestDto participationRequestDto) {
         return Request.builder()

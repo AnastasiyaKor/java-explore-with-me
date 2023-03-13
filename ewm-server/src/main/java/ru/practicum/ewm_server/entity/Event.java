@@ -28,8 +28,6 @@ public class Event {
     @JoinColumn(name = "category")
     @ToString.Exclude
     private Category category;
-    @Column(name = "confirmed_requests")
-    private int confirmedRequests;
     @Column(name = "description", length = 7000)
     private String description;
     @Column(name = "event_date")
@@ -47,8 +45,6 @@ public class Event {
     private Boolean requestModeration;
     @Column(name = "title", length = 120)
     private String title;
-    @Column(name = "views")
-    private Integer views;
     @Column(name = "create_on")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createOn;

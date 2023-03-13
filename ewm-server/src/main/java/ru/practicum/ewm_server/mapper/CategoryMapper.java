@@ -1,5 +1,6 @@
 package ru.practicum.ewm_server.mapper;
 
+import lombok.experimental.UtilityClass;
 import ru.practicum.ewm_server.dto.CategoryDto;
 import ru.practicum.ewm_server.dto.NewCategoryDto;
 import ru.practicum.ewm_server.entity.Category;
@@ -7,6 +8,7 @@ import ru.practicum.ewm_server.entity.Category;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@UtilityClass
 public class CategoryMapper {
 
     public static Category toCategory(NewCategoryDto newCategoryDto) {

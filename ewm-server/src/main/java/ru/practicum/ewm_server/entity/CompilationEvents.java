@@ -15,15 +15,16 @@ import java.util.Objects;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @ToString
+@AllArgsConstructor
 public class CompilationEvents implements Serializable {
     @Id
     @Column(name = "compilation_id")
-    private int compId;
+    private Integer compId;
     @Id
     @Column(name = "event_id")
-    private int eventId;
+    private Integer eventId;
+
 
     @Override
     public boolean equals(Object o) {

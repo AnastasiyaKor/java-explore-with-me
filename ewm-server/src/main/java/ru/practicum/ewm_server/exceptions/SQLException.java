@@ -1,7 +1,7 @@
 package ru.practicum.ewm_server.exceptions;
 
-public class PSQLException extends RuntimeException {
-    public PSQLException(String message) {
+public class SQLException extends RuntimeException {
+    public SQLException(String message) {
         super(message);
     }
 

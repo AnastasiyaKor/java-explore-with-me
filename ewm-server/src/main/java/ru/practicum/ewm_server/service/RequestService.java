@@ -1,8 +1,11 @@
 package ru.practicum.ewm_server.service;
 
+import ru.practicum.ewm_server.entity.Event;
 import ru.practicum.ewm_server.entity.Request;
+import ru.practicum.ewm_server.enums.RequestStatusEnum;
 
 import java.util.List;
+import java.util.Map;
 
 public interface RequestService {
     List<Request> getParticipationRequestUserId(int userId);
@@ -12,4 +15,9 @@ public interface RequestService {
     Request cancelParticipationRequestId(int userId, int requestId);
 
     Request getById(int requestId);
+
+    Integer getConfirmedRequest(int eventId, RequestStatusEnum requestStatusEnum);
+
+    Map<Integer, Integer> getConfirmedRequest(List<Event> events, RequestStatusEnum requestStatusEnum);
+
 }

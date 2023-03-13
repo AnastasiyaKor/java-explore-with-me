@@ -2,7 +2,7 @@ package ru.practicum.ewm_server.dto;
 
 import lombok.*;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Setter
 @Getter
@@ -10,8 +10,8 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @Builder
 public class LocationDto {
-    @NotBlank
-    float lat;
-    @NotBlank
-    float lon;
+    @NotNull
+    private Float lat;
+    @NotNull
+    private Float lon;
 }

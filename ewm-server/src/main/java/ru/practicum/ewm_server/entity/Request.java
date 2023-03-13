@@ -21,10 +21,10 @@ public class Request {
     private LocalDateTime created;
     @ManyToOne
     @JoinColumn(name = "event")
-    private Event event;//id
+    private Event event;
     @ManyToOne
     @JoinColumn(name = "requester")
-    private User requester;//id
+    private User requester;
     @Enumerated(EnumType.STRING)
     private RequestStatusEnum status;
 

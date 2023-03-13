@@ -16,6 +16,7 @@ import ru.practicum.ewm_server.service.EventService;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -51,11 +52,11 @@ public class CompilationServiceImpl implements CompilationService {
     @Transactional
     public Compilation create(NewCompilationDto newCompilationDto) {
         if (newCompilationDto.getEvents().isPresent()) {
-            List<Event> events = eventService.getEventForAdmin(newCompilationDto.getEvents().get());
+            Set<Event> events = eventService.getEventForAdmin(newCompilationDto.getEvents().get());
             return compilationRepository.save(new Compilation(events, newCompilationDto.getPinned(),
                     newCompilationDto.getTitle()));
         } else {
-            return compilationRepository.save(new Compilation(Collections.emptyList(), newCompilationDto.getPinned(),
+            return compilationRepository.save(new Compilation(null, newCompilationDto.getPinned(),
                     newCompilationDto.getTitle()));
         }
     }
@@ -70,15 +71,19 @@ public class CompilationServiceImpl implements CompilationService {
     @Transactional
     public Compilation update(NewCompilationDto newCompilationDto, int compId) {
         Compilation compilation = getCompilationId(compId);
-        List<Event> events;
+        Set<Event> events;
         if (newCompilationDto.getEvents().isPresent()) {
             events = eventRepository.getEventByIdForListCompilation(newCompilationDto.getEvents().get());
             compilation.setEvents(events);
         } else {
-            compilation.setEvents(Collections.emptyList());
+            compilation.setEvents(null);
         }
-        compilation.setPinned(newCompilationDto.getPinned());
-        compilation.setTitle(newCompilationDto.getTitle());
+        if (newCompilationDto.getPinned() != null) {
+            compilation.setPinned(newCompilationDto.getPinned());
+        }
+        if (newCompilationDto.getTitle() != null && !newCompilationDto.getTitle().isBlank()) {
+            compilation.setTitle(newCompilationDto.getTitle());
+        }
         return compilation;
     }
 }

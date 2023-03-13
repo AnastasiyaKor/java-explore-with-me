@@ -3,6 +3,7 @@ package ru.practicum.ewm_server.web.admins;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm_server.dto.NewUserRequest;
 import ru.practicum.ewm_server.dto.UserDto;
@@ -11,19 +12,22 @@ import ru.practicum.ewm_server.mapper.UserMapper;
 import ru.practicum.ewm_server.service.UserService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @Slf4j
 @RestController
+@Validated
 @RequiredArgsConstructor
 @RequestMapping("/admin/users")
 public class AdminUserController {
     private final UserService userService;
 
     @GetMapping
-    public List<UserDto> getUsers(@RequestParam List<Integer> ids,
-                                  @RequestParam(defaultValue = "0") int from,
-                                  @RequestParam(defaultValue = "10") int size) {
+    public List<UserDto> getUsers(@RequestParam(required = false) List<Integer> ids,
+                                  @RequestParam(defaultValue = "0") @PositiveOrZero int from,
+                                  @RequestParam(defaultValue = "10") @Positive int size) {
         log.info("A request was received from the administrator to obtain information about users");
         return UserMapper.toListUsersDto(userService.getUsers(ids, from, size));
     }

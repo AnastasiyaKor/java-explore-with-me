@@ -2,20 +2,20 @@ package ru.practicum.ewm_server.web.publics;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm_server.dto.CompilationDto;
 import ru.practicum.ewm_server.entity.Compilation;
 import ru.practicum.ewm_server.mapper.CompilationMapper;
 import ru.practicum.ewm_server.service.CompilationService;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 
 @Slf4j
-@Valid
+@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/compilations")
