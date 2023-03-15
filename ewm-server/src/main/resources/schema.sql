@@ -30,7 +30,6 @@ CREATE TABLE IF NOT EXISTS events
     initiator          INT           NOT NULL,
     annotation         VARCHAR(2000) NOT NULL,
     category           INT           NOT NULL,
-    confirmed_requests INT,
     description        VARCHAR(7000) NOT NULL,
     event_date         TIMESTAMP     NOT NULL,
     location           INT           NOT NULL,
@@ -38,7 +37,6 @@ CREATE TABLE IF NOT EXISTS events
     participant_limit  INT,
     request_moderation BOOLEAN       NOT NULL,
     title              VARCHAR(120)  NOT NULL,
-    views              INT,
     create_on          TIMESTAMP     NOT NULL,
     published_on       TIMESTAMP,
     state              VARCHAR(10)   NOT NULL,
@@ -101,4 +99,6 @@ CREATE TABLE IF NOT EXISTS comments_admin
     created_on    TIMESTAMP,
     CONSTRAINT pk_comments_admin PRIMARY KEY (id),
     CONSTRAINT fk_comment_id FOREIGN KEY (comment_id) REFERENCES comments (id) ON DELETE CASCADE
-)
+);
+
+
