@@ -5,6 +5,7 @@ import lombok.*;
 import ru.practicum.ewm_server.enums.EventStateEnum;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -31,4 +32,5 @@ public class EventFullDto {
     private EventStateEnum state;
     private String title;
     private int views;
+    private List<CommentShortDto> commentShortDto;
 }

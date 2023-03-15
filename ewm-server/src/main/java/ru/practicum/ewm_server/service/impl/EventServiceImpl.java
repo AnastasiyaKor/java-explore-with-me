@@ -71,7 +71,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventCommentFullDto getEventByIdUserWithId(int userId, int eventId) {
+    public EventFullDto getEventByIdUserWithId(int userId, int eventId) {
         int confirmedRequest = requestService.getConfirmedRequest(eventId);
         Event event = eventRepository.getEventByIdUserWitchId(userId, eventId);
         EventFullDto eventFullDto = EventMapper.toEventFullDto(event);
@@ -277,7 +277,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventCommentFullDto getEventByIdPublic(int id, HttpServletRequest request) {
+    public EventFullDto getEventByIdPublic(int id, HttpServletRequest request) {
         String start = "2000-01-01 00:00:00";
         LocalDateTime end = LocalDateTime.now();
         Event event = eventRepository.findByIdAndStateEquals(id, EventStateEnum.PUBLISHED);
@@ -461,13 +461,15 @@ public class EventServiceImpl implements EventService {
         }
     }
 
-    private EventCommentFullDto result(int eventId, EventFullDto eventFullDto) {
+    private EventFullDto result(int eventId, EventFullDto eventFullDto) {
         List<Comment> comments = commentRepository.getCommentByEventId(eventId);
         if (!comments.isEmpty()) {
             List<CommentShortDto> commentShortDtos = CommentMapper.toListCommentShortDto(comments);
-            return new EventCommentFullDto(eventFullDto, commentShortDtos);
+            eventFullDto.setCommentShortDto(commentShortDtos);
+            return eventFullDto;
         } else {
-            return new EventCommentFullDto(eventFullDto, Collections.emptyList());
+            eventFullDto.setCommentShortDto(Collections.emptyList());
+            return eventFullDto;
         }
     }
 }
