@@ -48,7 +48,7 @@ public class PrivateEventController {
     }
 
     @GetMapping("/{eventId}")
-    public EventFullDto getEventByIdUserWithId(@PathVariable int userId, @PathVariable int eventId) {
+    public EventCommentFullDto getEventByIdUserWithId(@PathVariable int userId, @PathVariable int eventId) {
         log.info("A request was received from the user under the id: {} " +
                 "to get full information about his event under the id: {}", userId, eventId);
         userService.getById(userId);

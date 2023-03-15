@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.ewm_server.dto.EventFullDto;
+import ru.practicum.ewm_server.dto.EventCommentFullDto;
 import ru.practicum.ewm_server.dto.EventShortDto;
 import ru.practicum.ewm_server.enums.EventSortEnum;
 import ru.practicum.ewm_server.service.EventService;
@@ -48,7 +48,7 @@ public class PublicEventController {
     }
 
     @GetMapping("/{id}")
-    public EventFullDto getEventByIdPublic(@PathVariable int id, HttpServletRequest request) {
+    public EventCommentFullDto getEventByIdPublic(@PathVariable int id, HttpServletRequest request) {
         statisticService.addHit(request);
         log.info("A public request was received for detailed information about the event under the id: {}", id);
         eventService.getById(id);
