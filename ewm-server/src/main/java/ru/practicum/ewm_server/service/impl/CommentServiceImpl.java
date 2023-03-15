@@ -50,6 +50,7 @@ public class CommentServiceImpl implements CommentService {
         comment.setCommentedEvent(event);
         comment.setCreateOn(LocalDateTime.now());
         comment.setPublishedOn(null);
+        comment.setEditOn(null);
         comment.setStatus(StatusComment.PENDING);
         return commentRepository.save(comment);
     }
@@ -59,7 +60,7 @@ public class CommentServiceImpl implements CommentService {
     public Comment update(UpdateCommentDto updateCommentDto, int userId, int commentId) {
         Comment comment = getById(commentId);
         comment.setComment(updateCommentDto.getComment());
-        comment.setCreateOn(LocalDateTime.now());
+        comment.setEditOn(LocalDateTime.now());
         comment.setPublishedOn(null);
         comment.setStatus(StatusComment.PENDING);
         return comment;

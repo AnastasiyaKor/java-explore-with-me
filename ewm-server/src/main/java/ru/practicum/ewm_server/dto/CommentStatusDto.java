@@ -21,6 +21,8 @@ public class CommentStatusDto {
     private LocalDateTime createOn;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime publishedOn;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime editOn;
     private StatusComment status;
     private String commentAdmin;
     private LocalDateTime dateCreateCommentAdmin;

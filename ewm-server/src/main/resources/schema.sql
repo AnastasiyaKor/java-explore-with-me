@@ -84,6 +84,7 @@ CREATE TABLE IF NOT EXISTS comments
     commented_event INT           NOT NULL,
     create_on       TIMESTAMP     NOT NULL,
     published_on    TIMESTAMP,
+    edit_on         TIMESTAMP,
     status          VARCHAR       NOT NULL,
     comment_admin   VARCHAR(200),
     CONSTRAINT pk_comments PRIMARY KEY (id),

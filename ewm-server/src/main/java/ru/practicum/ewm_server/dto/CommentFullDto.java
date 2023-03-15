@@ -21,5 +21,7 @@ public class CommentFullDto {
     private LocalDateTime createOn;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime publishedOn;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime editOn;
     private StatusComment status;
 }

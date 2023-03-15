@@ -35,6 +35,9 @@ public class Comment {
     @Column(name = "published_on")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime publishedOn;
+    @Column(name = "edit_on")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime editOn;
     @Enumerated(EnumType.STRING)
     private StatusComment status = StatusComment.PENDING;
 }

@@ -16,7 +16,7 @@ public interface EventService {
 
     EventFullDto create(Event event);
 
-    EventFullDto getEventByIdUserWithId(int userId, int eventId);
+    EventCommentFullDto getEventByIdUserWithId(int userId, int eventId);
 
     Event getById(int eventId);
 
@@ -36,7 +36,7 @@ public interface EventService {
                                         LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean onlyAvailable,
                                         EventSortEnum sort, int from, int size, HttpServletRequest request);
 
-    EventFullDto getEventByIdPublic(int id, HttpServletRequest request);
+    EventCommentFullDto getEventByIdPublic(int id, HttpServletRequest request);
 
     Set<Event> getEventForAdmin(Set<Integer> ids);
 }

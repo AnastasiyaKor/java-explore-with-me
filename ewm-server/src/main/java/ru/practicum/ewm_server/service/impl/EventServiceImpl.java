@@ -71,12 +71,12 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventFullDto getEventByIdUserWithId(int userId, int eventId) {
+    public EventCommentFullDto getEventByIdUserWithId(int userId, int eventId) {
         int confirmedRequest = requestService.getConfirmedRequest(eventId);
         Event event = eventRepository.getEventByIdUserWitchId(userId, eventId);
         EventFullDto eventFullDto = EventMapper.toEventFullDto(event);
         eventFullDto.setConfirmedRequests(confirmedRequest);
-        return eventFullDto;
+        return result(eventId, eventFullDto);
     }
 
     @Override
@@ -277,7 +277,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventFullDto getEventByIdPublic(int id, HttpServletRequest request) {
+    public EventCommentFullDto getEventByIdPublic(int id, HttpServletRequest request) {
         String start = "2000-01-01 00:00:00";
         LocalDateTime end = LocalDateTime.now();
         Event event = eventRepository.findByIdAndStateEquals(id, EventStateEnum.PUBLISHED);
@@ -291,7 +291,7 @@ public class EventServiceImpl implements EventService {
         } else {
             eventFullDto.setViews(0);
         }
-        return eventFullDto;
+        return result(event.getId(), eventFullDto);
     }
 
     public Set<Event> getEventForAdmin(Set<Integer> ids) {

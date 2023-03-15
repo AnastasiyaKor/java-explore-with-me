@@ -1,5 +1,6 @@
 package ru.practicum.ewm_server.mapper;
 
+import lombok.experimental.UtilityClass;
 import ru.practicum.ewm_server.dto.CommentFullDto;
 import ru.practicum.ewm_server.dto.CommentShortDto;
 import ru.practicum.ewm_server.dto.CommentStatusDto;
@@ -10,6 +11,7 @@ import ru.practicum.ewm_server.entity.CommentsAdmin;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@UtilityClass
 public class CommentMapper {
     public static CommentFullDto toCommentFullDto(Comment comment) {
         return new CommentFullDto(
@@ -19,6 +21,7 @@ public class CommentMapper {
                 comment.getCommentedEvent().getId(),
                 comment.getCreateOn(),
                 comment.getPublishedOn(),
+                comment.getEditOn() != null ? comment.getEditOn() : null,
                 comment.getStatus()
         );
     }
@@ -32,6 +35,7 @@ public class CommentMapper {
                 comment.getCommentedEvent().getId(),
                 comment.getCreateOn(),
                 comment.getPublishedOn(),
+                comment.getEditOn() != null ? comment.getEditOn() : null,
                 comment.getStatus(),
                 commentsAdmin != null ? commentsAdmin.getCommentAdmin() : null,
                 commentsAdmin != null ? commentsAdmin.getCreatedOn() : null
